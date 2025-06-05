@@ -1,0 +1,2 @@
+ssh -i ~/Downloads/bimm143_mmcclellan.pem ubuntu@ec2-54-188-233-194.us-west-2.compute.amazonaws.com
+scp -r -i ~/Downloads/bimm143_mmcclellan.pem ubuntu@ec2-54-188-233-194.us-west-2.compute.amazonaws.com:~/class17/*_quant .

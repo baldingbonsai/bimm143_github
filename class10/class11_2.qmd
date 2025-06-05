@@ -1,0 +1,277 @@
+---
+title: "Class 11: AlphaFold"
+author: "Michael McClellan (PID: A169692395)"
+format: pdf
+toc: true
+---
+
+Here we read the results from AlphaFold and try to interpret all the models and quality score metrics: 
+
+```{r}
+library(bio3d)
+
+pth <- "dimer_23119/"
+pdb.files <- list.files(path = pth, full.names = TRUE, pattern = ".pdb")
+```
+
+Align and superpose all these models 
+```{r}
+file.exists(pdb.files)
+```
+
+```{r}
+pdbs <- pdbaln(pdb.files, fit=TRUE, exefile="msa")
+```
+
+
+```{r}
+library(bio3dview)
+view.pdbs(pdbs)
+```
+
+```{r}
+plot(pdbs$b[1,], typ="l", ylim=c(0,100), ylab = "pLDDT score")
+lines(pdbs$b[2,], typ="l", col="blue")
+lines(pdbs$b[3,], typ="l", col="lightgreen")
+lines(pdbs$b[4,], typ="l", col="orange")
+lines(pdbs$b[5,], typ="l", col="violet")
+```
+
+```{r}
+library(pheatmap)
+
+rd <- rmsd(pdbs, fit=T)
+
+colnames(rd) <- paste0("m",1:5)
+rownames(rd) <- paste0("m",1:5)
+pheatmap(rd)
+```
+
+```{r}
+core <- core.find(pdbs)
+```
+
+```{r}
+core.inds <- print(core, vol=0.5)
+```
+
+```{r}
+xyz <- pdbfit(pdbs, core.inds, outpath="corefit_structures")
+```
+
+```{r}
+rf <- rmsf(xyz)
+
+plotb3(rf, sse=pdbs)
+abline(v=100, col="gray", ylab="RMSF")
+```
+
+```{r}
+library(jsonlite)
+
+# Listing of all PAE JSON files
+pae_files <- list.files(path=pth,
+                        pattern=".*model.*\\.json",
+                        full.names = TRUE)
+pae_files
+```
+
+```{r}
+pae1 <- read_json(pae_files[1],simplifyVector = TRUE)
+pae5 <- read_json(pae_files[5],simplifyVector = TRUE)
+
+attributes(pae1)
+```
+
+```{r}
+head(pae1$plddt)
+```
+
+```{r}
+pae1$max_pae
+pae5$max_pae
+```
+
+```{r}
+ plot.dmat(pae1$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)")
+```
+
+```{r}
+plot.dmat(pae5$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)",
+          grid.col = "black",
+          zlim=c(0,30))
+```
+
+```{r}
+aln_file <- list.files(path=pth,
+                       pattern=".a3m$",
+                        full.names = TRUE)
+
+aln <- read.fasta(aln_file[1], to.upper = TRUE)
+dim(aln$ali)
+```
+
+
+```{r}
+pdbs_2 <- read.pdb("1hsg")
+```
+
+```{r}
+sim <- conserv(aln)
+
+plotb3(sim[1:99], sse=trim.pdb(pdbs_2, chain="A"),
+       ylab="Conservation Score")
+```
+
+
+```{r}
+con <- consensus(aln, cutoff = 0.9)
+con$seq
+```
+
+```{r}
+m1.pdb <- read.pdb(pdb.files[1])
+occ <- vec2resno(c(sim[1:99], sim[1:99]), m1.pdb$atom$resno)
+write.pdb(m1.pdb, o=occ, file="m1_conserv.pdb")
+```
+
+![M1_Conserv](M1_CONSERV.PDB.png)
+
+
+## Exploration of my sequence for the Find a Gene Project:
+
+![My_Gene](TEST_2D266_UNRELAXED_RANK_001_ALPHAFOLD2_PTM_MODEL_3_SEED_000.PDB-TEST_2D266_UNRELAXED_RANK_002_ALPHAFOLD2_PTM_MODEL_4_SEED_000.PDB-TEST_2D266_UNRELAXED_RANK_003_ALPHAFOLD2_PTM_MODEL_1_SEED_000.PDB-TEST_2D266_UNRELAXED_RANK_004_ALPHAFOLD2_P.png)
+
+```{r}
+results_dir <- "test_2d266/"
+```
+
+```{r}
+pdb_files_2 <- list.files(path=results_dir,
+                        pattern="*.pdb",
+                        full.names = TRUE)
+
+basename(pdb_files_2)
+```
+
+```{r}
+pdbs_3 <- pdbaln(pdb_files_2, fit=TRUE, exefile="msa")
+```
+
+```{r}
+rd_2 <- rmsd(pdbs_3, fit=T)
+range(rd_2)
+```
+
+```{r}
+library(pheatmap)
+
+colnames(rd_2) <- paste0("m",1:5)
+rownames(rd_2 ) <- paste0("m",1:5)
+pheatmap(rd_2)
+```
+
+```{r}
+pdb_my_gene <- read.pdb("3K5E")
+```
+
+```{r}
+plotb3(pdbs_3$b[1,], typ="l", lwd=2, sse=pdb_my_gene)
+points(pdbs_3$b[2,], typ="l", col="red")
+points(pdbs_3$b[3,], typ="l", col="blue")
+points(pdbs_3$b[4,], typ="l", col="darkgreen")
+points(pdbs_3$b[5,], typ="l", col="orange")
+abline(v=100, col="gray")
+```
+
+```{r}
+core_2 <- core.find(pdbs_3)
+```
+
+```{r}
+core.inds_2 <- print(core, vol=0.5)
+```
+
+```{r}
+xyz_2 <- pdbfit(pdbs, core.inds, outpath="corefit_structures")
+```
+
+```{r}
+rf_2 <- rmsf(xyz_2)
+
+plotb3(rf_2, sse=pdb_my_gene)
+abline(v=100, col="gray", ylab="RMSF")
+```
+
+```{r}
+pae_files_2 <- list.files(path=results_dir,
+                        pattern=".*model.*\\.json",
+                        full.names = TRUE)
+```
+
+```{r}
+pae1_2 <- read_json(pae_files_2[1],simplifyVector = TRUE)
+pae5_2 <- read_json(pae_files_2[5],simplifyVector = TRUE)
+
+attributes(pae1_2)
+```
+
+```{r}
+head(pae1_2$plddt) 
+```
+
+```{r}
+pae1_2$max_pae
+```
+
+```{r}
+pae5_2$max_pae
+```
+
+```{r}
+plot.dmat(pae1_2$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)")
+```
+
+```{r}
+plot.dmat(pae5_2$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)",
+          grid.col = "black",
+          zlim=c(0,30))
+```
+
+```{r}
+aln_file_2 <- list.files(path=results_dir,
+                       pattern=".a3m$",
+                        full.names = TRUE)
+aln_file_2
+```
+
+```{r}
+aln_2 <- read.fasta(aln_file_2[1], to.upper = TRUE)
+```
+
+```{r}
+dim(aln_2$ali)
+```
+
+```{r}
+sim_2 <- conserv(aln_2)
+```
+
+```{r}
+plotb3(sim[1:99], sse=trim.pdb(pdb_my_gene, chain="A"),
+       ylab="Conservation Score")
+```
+
+```{r}
+con_2 <- consensus(aln, cutoff = 0.9)
+con_2$seq
+```
+
