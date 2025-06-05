@@ -3,11 +3,11 @@ My classwork from [BIMM143 S25](https://bioboot.github.io/bimm143_S25/) at UC Sa
 
 - Class 4: Intro to R
 
-- Class 5: Advanced Graphics with **ggplot2**
+- Class 5: [Advanced Graphics with **ggplot2**](class05.md)
 
-- Class 6: R Functions
+- Class 6: [R Functions](class06.md)
 
-- Class 7: Introduction to Machine Learning
+- Class 7: [Introduction to Machine Learning](class07.md)
 
 - Class 8: Unsupervised Learning Mini-Project
 
