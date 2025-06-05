@@ -23,6 +23,8 @@ My classwork from [BIMM143 S25](https://bioboot.github.io/bimm143_S25/) at UC Sa
 
 - Class 14: [RNA-Seq Mini Project](https://github.com/baldingbonsai/bimm143_github/blob/main/class14/class14.md)
 
+- Class 15: Hands-on with Git and Github
+
 - Class 16: Essential UNIX
 
 - Class 17: [Analyzing Sequencing Data in the Cloud](https://github.com/baldingbonsai/bimm143_github/blob/main/class17/class17.md)
