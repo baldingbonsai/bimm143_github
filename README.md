@@ -29,4 +29,8 @@ My classwork from [BIMM143 S25](https://bioboot.github.io/bimm143_S25/) at UC Sa
 
 - Class 17: [Analyzing Sequencing Data in the Cloud](https://github.com/baldingbonsai/bimm143_github/blob/main/class17/class17.md)
 
-- Clas 18: [Investigating Pertussis Resurgence Mini-Project](https://github.com/baldingbonsai/bimm143_github/tree/main/class18)
+- Class 18: [Investigating Pertussis Resurgence Mini-Project](https://github.com/baldingbonsai/bimm143_github/tree/main/class18)
+
+- Class 19: Mini-Project: Cancer Mutation Analysis
+
+- Class 20: Portfolio Building
